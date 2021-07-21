@@ -119,17 +119,21 @@ def create_partially_fully_connected_graph(_set :Union[list, set, tuple]):
     idx_offset = 1
     for idx_offset in range(0, len(_set)-1):  # TODO replace with for loop? on idx_offset? 
         in_chain_edges += [(0, offset)] + [(offset+i, offset+i+1)for i in range(len(_set)-idx_offset-1)] + [(len(_set)+offset-idx_offset-1, graph.vcount()-1)]
-        in_chain_weights += _set[idx_offset:] + [0.1]
+        in_chain_weights += _set[idx_offset:] + [0]
 
         # Do Interconnections
         in_chain_edges += [(offset+i, offset+k+1) for i in range(len(_set)-idx_offset) for k in range(i+1, len(_set)-idx_offset-1)]
         in_chain_weights += [_set[k+1+idx_offset] for i in range(len(_set)-idx_offset) for k in range(i+1, len(_set)-idx_offset-1)]
 
+        # Do chain to end
+        in_chain_edges += [(offset+i, graph.vcount()-1)for i in range(len(_set)-idx_offset-1)]
+        in_chain_weights += [0]*(len(_set)-idx_offset-1)
+
         offset += len(_set) - idx_offset
 
     # Special case for last node remaining
     in_chain_edges += [(0, graph.vcount()-2), (graph.vcount()-2, graph.vcount()-1)]
-    in_chain_weights += [_set[-1], 0.1]
+    in_chain_weights += [_set[-1], 0]
 
     # Add edges to the graph
     graph.add_edges(in_chain_edges)
@@ -156,7 +160,8 @@ def query_graph(tv_interval, _graph, _top_sort, _n_pdb):
     dd[_top_sort[0]][0] = [0]
     dd[_top_sort[0]][1] = [[_top_sort[0]]]
     for n in _top_sort[0:-1]:
-
+        if n not in dd:
+            continue
         edges = _graph.es.select(_source=n)
         eids = [e.index for e in edges]
         expand_tvs = [_graph.es[e]["weight"] for e in eids]
@@ -185,20 +190,20 @@ def query_graph(tv_interval, _graph, _top_sort, _n_pdb):
 
 # test = [-817781123, -2074184841, 794733069, 327907086, -214831599, 1388864021, -162338151, 971804323, 31343141, -924873050, -1138943565, 1317377721, -535653691, 1681487557, 60933704, -1143347511, 608290391, -1920219048, 1692988261, 1796898044]
 
-# test = [1,2,3,4]
+# test = [1,2,3,4,5]
 test = [1299781766, 1549892490, 229664014, 155290526, 1215115934, 2018368555, 976069422, 947710648, 889496249, 1018376771, 1318631235, 198577357, 2090047824, 543544149, 1056557538, 796090084, 144334059, 28505075, 655235828, 1691614199]
+
+
 g, g_top = create_fully_connected_graph(test)
 pdbs = __create_pdb(g, g_top[::-1])
-h_test = query_graph([test[12] + test[14]+ test[18]]*2, g, g_top, pdbs)
+h_test = query_graph([test[12] + test[14]+ test[3]]*2, g, g_top, pdbs)
 
 
 
-g, g_top = create_partially_fully_connected_graph(test)
-pdbs = __create_pdb(g, g_top[::-1])
+g_2, g_top_2 = create_partially_fully_connected_graph(test)
+pdbs_2 = __create_pdb(g_2, g_top_2[::-1])
+h_test_2 = query_graph([test[12] + test[14]+ test[3]]*2, g_2, g_top_2, pdbs_2)
 
-
-# TODO here is no result!
-h_test = query_graph([test[12] + test[14]+ test[18]]*2, g, g_top, pdbs)
 
 print(h_test)
 
