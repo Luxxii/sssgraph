@@ -8,7 +8,7 @@ setup(
     name='sssgraph',
     version='0.1.0',
     author="Dominik Lux",
-    description="sssgraph, Tackeling the SubSetSum-Problem with graphs",
+    description="sssgraph, Tackling the SubSetSum-Problem with graphs",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Luxxii/sssgraph",
