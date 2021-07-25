@@ -4,8 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+python-igraph = "*"
+numpy = "*"
 
 [dev-packages]
+matplotlib = "*"
+seaborn = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.9"
