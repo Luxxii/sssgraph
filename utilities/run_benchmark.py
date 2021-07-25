@@ -53,7 +53,7 @@ def benchmark(list_of_funcs, repititions = 30,  lower = 5, upper = 21):
 
     # Get the benchmarks
     for i in tqdm.tqdm(range(lower, upper)):
-        _s = get_set(number_of_elements=i)
+        _s = list(get_set(number_of_elements=i))
         for _ in tqdm.tqdm(range(repititions), leave=False):
             interval = [sum(random.sample(_s, random.randint(0, len(_s))))]*2
             for d, func in zip(dicts, list_of_funcs):
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     pyplot.show()
 
 
-    # Benchmark  only descending ones!
+    # Benchmark  only descending ones! (which is faster for sets with only positive numbers!)
     t = benchmark([
         time_full_sorted_desc,
         time_partial_sorted_desc,

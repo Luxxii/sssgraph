@@ -5,27 +5,27 @@ import struct
 
 def get_set(num_bytes=4, number_of_elements=100, floating_numbers=False, negative=False):
     """ get a set """
-    if args.num_bytes == 4:
+    if num_bytes == 4:
         struct_i = "i"
         struct_f = "f"
-    elif args.num_bytes == 8:
+    elif num_bytes == 8:
         struct_i = "l"
         struct_f = "d"
 
     final_set = set()
 
-    while len(final_set) != args.number_of_elements:
+    while len(final_set) != number_of_elements:
 
-        b = random.randbytes(args.num_bytes)
+        b = random.randbytes(num_bytes)
 
-        if args.floating_numbers:
+        if floating_numbers:
             next_element = struct.unpack(struct_f, b)[0]
             if next_element == float("inf") or next_element == float("-inf"):
                 continue
         else:
             next_element = struct.unpack(struct_i, b)[0]
 
-        if not args.negative and next_element < 0:
+        if not negative and next_element < 0:
             continue
 
         final_set.add(next_element)
